@@ -1,0 +1,1 @@
+# cardmarket-autosort-js
