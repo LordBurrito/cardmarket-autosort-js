@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         cardmarket-auto-sort
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Append parameters to Cardmarket Singles pages
 // @author       LordBurrito
 // @match        https://www.cardmarket.com/en/Magic/Products/Singles/*
+// @match        https://www.cardmarket.com/en/Magic/Cards/*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/LordBurrito/cardmarket-autosort-js/main/cardmarket-auto-sort.user.js
 // @downloadURL  https://raw.githubusercontent.com/LordBurrito/cardmarket-autosort-js/main/cardmarket-auto-sort.user.js
@@ -16,7 +17,7 @@
     const url = window.location.href;
 
     const setPageRegex = /^https:\/\/www\.cardmarket\.com\/en\/Magic\/Products\/Singles\/[^\/\?]+(?:\?.*)?$/;
-    const cardPageRegex = /^https:\/\/www\.cardmarket\.com\/en\/Magic\/Products\/Singles\/[^\/\?]+\/[^\/\?]+(?:\?.*)?$/;
+    const cardPageRegex = /^https:\/\/www\.cardmarket\.com\/en\/Magic\/(?:Products\/Singles\/[^\/\?]+\/[^\/\?]+|Cards\/[^\/\?]+)(?:\?.*)?$/;
 
     if (setPageRegex.test(url)) {
         const u = new URL(url);
