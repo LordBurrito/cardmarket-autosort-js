@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         cardmarket-auto-sort
 // @namespace    http://tampermonkey.net/
-// @version      1.1
-// @description  Append parameters to Cardmarket Singles pages
+// @version      1.2
+// @description  Autosort card listings by price and add quick filter buttons for UK sellers and foils on Cardmarket product pages.
 // @author       LordBurrito
 // @match        https://www.cardmarket.com/en/Magic/Products/Singles/*
 // @match        https://www.cardmarket.com/en/Magic/Cards/*
@@ -42,12 +42,13 @@
 
         Object.assign(container.style, {
             position: 'fixed',
-            bottom: '20px',
-            right: '20px',
+            right: '1rem',
+            bottom: '2.5rem',
             zIndex: '999999',
             display: 'flex',
-            flexDirection: 'column',
-            gap: '8px'
+            flexDirection: 'row',
+            gap: '6px',
+            alignItems: 'center'
         });
 
         const sellerButton = createButton(
@@ -95,9 +96,13 @@
         button.addEventListener('click', onClick);
 
         Object.assign(button.style, {
-            width: '44px',
-            height: '44px',
-            fontSize: '22px',
+            width: '2.3rem',
+            height: '2.3rem',
+            fontSize: '1.2rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0',
             lineHeight: '1',
             background: active ? '#2da44e' : '#1f6feb',
             color: '#fff',
