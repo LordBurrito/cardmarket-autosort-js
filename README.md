@@ -1,6 +1,6 @@
 # cardmarket-autosort-js
 
-A Tampermonkey userscript to enhance browsing on Cardmarket.com for Magic: The Gathering singles.
+A Tampermonkey userscript to enhance browsing on Cardmarket.com for Magic: The Gathering.
 
 ## Description
 
