@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         cardmarket-auto-sort
 // @namespace    http://tampermonkey.net/
-// @version      1.2
-// @description  Autosort card listings by price and add quick filter buttons for UK sellers and foils on Cardmarket product pages.
+// @version      1.3
+// @description  Autosort card listings by price and add quick filter buttons for UK sellers, English listings and foils on Cardmarket product pages.
 // @author       LordBurrito
-// @match        https://www.cardmarket.com/en/Magic/Products/Singles/*
+// @match        https://www.cardmarket.com/en/Magic/Products/*
 // @match        https://www.cardmarket.com/en/Magic/Cards/*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/LordBurrito/cardmarket-autosort-js/main/cardmarket-auto-sort.user.js
@@ -18,6 +18,8 @@
 
     const setPageRegex = /^https:\/\/www\.cardmarket\.com\/en\/Magic\/Products\/Singles\/[^\/\?]+(?:\?.*)?$/;
     const cardPageRegex = /^https:\/\/www\.cardmarket\.com\/en\/Magic\/(?:Products\/Singles\/[^\/\?]+\/[^\/\?]+|Cards\/[^\/\?]+)(?:\?.*)?$/;
+    // Sealed products (booster boxes, boosters, decks, ...): /Magic/Products/<Category>/<Product>
+    const sealedPageRegex = /^https:\/\/www\.cardmarket\.com\/en\/Magic\/Products\/(?!Singles(?:\/|$))[^\/\?]+\/[^\/\?]+(?:\?.*)?$/;
 
     if (setPageRegex.test(url)) {
         const u = new URL(url);
@@ -31,10 +33,13 @@
     }
 
     if (cardPageRegex.test(url)) {
-        addActionButtons();
+        addActionButtons({ showFoil: true });
+    } else if (sealedPageRegex.test(url)) {
+        // Sealed products are never foil, so that toggle is left out.
+        addActionButtons({ showFoil: false });
     }
 
-    function addActionButtons() {
+    function addActionButtons({ showFoil }) {
         if (document.getElementById('tm-cardmarket-buttons')) return;
 
         const container = document.createElement('div');
@@ -58,15 +63,27 @@
             isParamActive('sellerCountry', '13')
         );
 
-        const foilButton = createButton(
-            '⭐',
-            'Foils only',
-            () => toggleParam('isFoil', 'Y'),
-            isParamActive('isFoil', 'Y')
+        const languageButton = createButton(
+            'EN',
+            'English only',
+            () => toggleParam('language', '1'),
+            isParamActive('language', '1')
         );
 
         container.appendChild(sellerButton);
-        container.appendChild(foilButton);
+        container.appendChild(languageButton);
+
+        if (showFoil) {
+            const foilButton = createButton(
+                '⭐',
+                'Foils only',
+                () => toggleParam('isFoil', 'Y'),
+                isParamActive('isFoil', 'Y')
+            );
+
+            container.appendChild(foilButton);
+        }
+
         document.body.appendChild(container);
     }
 
@@ -98,7 +115,9 @@
         Object.assign(button.style, {
             width: '2.3rem',
             height: '2.3rem',
-            fontSize: '1.2rem',
+            // Text labels like "EN" need to be a touch smaller than emoji to fit the square.
+            fontSize: /^[\x20-\x7E]+$/.test(text) ? '0.95rem' : '1.2rem',
+            fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
